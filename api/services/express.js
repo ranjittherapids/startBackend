@@ -1,9 +1,10 @@
 import  express  from "express";
 import cors from 'cors';
 import bodyParser from "body-parser";
-import router from '../Routes/index.js'
+import router from '../Routes/index.js';
 const app=express();
 app.use(cors());
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())

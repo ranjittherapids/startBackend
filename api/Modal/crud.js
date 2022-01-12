@@ -1,4 +1,4 @@
-import  Mongoose  from "mongoose";
+const  Mongoose  =require ("mongoose")
 const CrudSchema=new Mongoose.Schema({
     name:{
         type:String,
@@ -13,4 +13,4 @@ const CrudSchema=new Mongoose.Schema({
         required:true
     }
 })
-export default Mongoose.model('CrudSchema',CrudSchema) 
+module.exports =  Mongoose.model('CrudSchema',CrudSchema) 

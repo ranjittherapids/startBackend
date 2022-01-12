@@ -1,8 +1,9 @@
-import express from "express";
-import crud from './crud.js';
-import chat from './chat.js'
-const router =express.Router()
+const router =require("express").Router()
+const crud =require('./crud.js')
+const chat =require('./chat.js')
+const socket =require('./Socket.js')
 router.use('/crud',crud)
 router.use('/chat',chat)
+router.use('/socket',socket)
 router.get('/',(req,res)=>res.send("backend working fine"))
-export default router
+module.exports = router

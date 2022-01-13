@@ -8,7 +8,7 @@ const io = new Server(server,{
         origin: "http://localhost:3000",
         methods: ["GET", "POST"]
       }
-});
+},{ transports: ['websocket', 'polling']});
 var users=[]
 let clientSocketIds = [];
 let connectedUsers= [];
@@ -21,7 +21,7 @@ const removeuser=(socketId)=>{
 users=users.filter(user=>user.socketId !==socketId)
 }
 const getuser=(userId)=>{
-    return users.find(user=>user.userId==userId)
+    return users.filter(user=>user.userId==userId)
 }
 io.on('connection', function(socket) {
    //console.log("user")
@@ -35,13 +35,18 @@ io.on('connection', function(socket) {
   // send message
   socket.on('sendmessage',({senderId,receiverId,text})=>{
 const user=getuser(receiverId)
-io.to(user.socketId).emit('getmessage',{senderId,text})
+console.log(text,receiverId,'text')
+console.log(user[0].socketId,'user')
+io.to(user && user[0].socketId).emit('getmessage',{senderId,text})
   })
  //  for disconnect
    socket.on('disconnect',(user)=>{
     removeuser(user.userId,socket.id)
     io.emit('getuser',users)
 })
-      
+socket.on("connect_error", (err) => {
+  console.log(`connect_error due to ${err.message}`);
+});
+
 });
 module.exports=server

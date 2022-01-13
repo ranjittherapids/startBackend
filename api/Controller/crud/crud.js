@@ -5,7 +5,10 @@ const router=express.Router()
     try{
         const UserData=new CrudSchema(req.body)
         UserData.save()
-        .then(response=> res.status(200).json({data:response,msg:'sucessfully save data'}))
+        .then(response=>{
+          res.status(200).json({data:response,msg:'sucessfully save data'})
+          //res.headers["Set-Cookie"] = "myfirstcookie=somecookievalue"
+        } )
         .catch(err=> res.status(400).json({data:err, msg:'problem with save data in db '}))
     }
   catch(err){ return res.status(400).send({data:err,msg:"something error occurs during createUser function called"})}

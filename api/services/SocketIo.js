@@ -3,38 +3,45 @@ const uuid = require("uuid");
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server,{
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+      }
+});
 var users=[]
 let clientSocketIds = [];
 let connectedUsers= [];
+const adduser=(userId,socketId)=>{
+    !users.some(user=>user.userId===userId) &&
+    users.push({userId,socketId})
+
+}
+const removeuser=(socketId)=>{
+users=users.filter(user=>user.socketId !==socketId)
+}
+const getuser=(userId)=>{
+    return users.find(user=>user.userId==userId)
+}
 io.on('connection', function(socket) {
-    // console.log(socket.id,'socket connected...');
-    // socket.on('loggedin', function(user) {
-    //     clientSocketIds.push({socket: socket, userId:  user.user_id});
-    //     connectedUsers = connectedUsers.filter(item => item.user_id != user.user_id);
-    //     connectedUsers.push({...user, socketId: socket.id})
-    //     io.emit('updateUserList', connectedUsers)
-    // });
-    //     socket.on("connected", function (userId) {
-    //         users[userId] = socket.id;
-            
-    //     });
-        socket.on('message', function(data) {
-            //console.log(data)
-            socket.broadcast.to(data.id).emit('message', data.msg);
-        })
-    // socket.on('chat message', (msg) => { 
-    //     socket.broadcast.emit('chat message', msg) 
-    //   });
-       
-    //   socket.on('join', function (data) {    
-    //     socket.join(data.email);
-    //   });
-    //   io.to(socket.id).emit('message', {msg: 'hello world.'});
-
-      
-
-      
+   //console.log("user")
+   io.emit("welcome",'hi ranjit')
+    //  for connect
+   socket.on('adduser',(user)=>{
+        adduser(user.userId,socket.id)
+        io.emit('getuser',users)
+        console.log(users,'wow')
+   })
+  // send message
+  socket.on('sendmessage',({senderId,receiverId,text})=>{
+const user=getuser(receiverId)
+io.to(user.socketId).emit('getmessage',{senderId,text})
+  })
+ //  for disconnect
+   socket.on('disconnect',(user)=>{
+    removeuser(user.userId,socket.id)
+    io.emit('getuser',users)
+})
       
 });
 module.exports=server

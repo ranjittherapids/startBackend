@@ -4,13 +4,17 @@ const CrudSchema=new Mongoose.Schema({
         type:String,
         required:true
     },
-    department:{
+    email:{
         type:String,
-        required:true
     },
     phone:{
         type:Number,
-        required:true
+    },
+    imageUrl:{
+        type:String,
+    },
+    password:{
+        type:String,
     }
 })
 module.exports =  Mongoose.model('CrudSchema',CrudSchema) 

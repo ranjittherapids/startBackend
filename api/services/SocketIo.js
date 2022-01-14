@@ -3,6 +3,13 @@ const uuid = require("uuid");
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const CrudSchema =require('../Modal/crud');
+const { ppid } = require('process');
+const { application } = require('express');
+//const CrudSchema =require ('../../Modal/crud.js')
+app.get("/get",(req,res)=>{
+
+})
 const io = new Server(server,{
     cors: {
         origin: "http://localhost:3000",
@@ -23,21 +30,24 @@ users=users.filter(user=>user.socketId !==socketId)
 const getuser=(userId)=>{
     return users.filter(user=>user.userId==userId)
 }
-io.on('connection', function(socket) {
-   //console.log("user")
-   io.emit("welcome",'hi ranjit')
+io.on('connection', function async(socket) {
+  console.log(socket.id," new users connected" );
+
+   
     //  for connect
    socket.on('adduser',(user)=>{
-        adduser(user.userId,socket.id)
-        io.emit('getuser',users)
-        console.log(users,'wow')
+     var data=user;
+     data.socketId=socket.id
+    io.emit('AddUserSocketId',data)
+        // adduser(user._id,socket.id)
+        // // io.emit('getuser',users)
+        // // console.log(users,'wow')
    })
   // send message
-  socket.on('sendmessage',({senderId,receiverId,text})=>{
-const user=getuser(receiverId)
-console.log(text,receiverId,'text')
-console.log(user[0].socketId,'user')
-io.to(user && user[0].socketId).emit('getmessage',{senderId,text})
+  socket.on('sendmessage',(data)=>{
+  console.log(data,'text')
+  //io.emit('getmessage',text)
+ io.to(data.receiverId).emit('getmessage',data.text)
   })
  //  for disconnect
    socket.on('disconnect',(user)=>{
@@ -47,6 +57,5 @@ io.to(user && user[0].socketId).emit('getmessage',{senderId,text})
 socket.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
-
 });
 module.exports=server

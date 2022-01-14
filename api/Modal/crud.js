@@ -2,15 +2,17 @@ const  Mongoose  =require ("mongoose")
 const CrudSchema=new Mongoose.Schema({
     name:{
         type:String,
-        required:true
     },
     email:{
         type:String,
     },
-    phone:{
+    phone_no:{
         type:Number,
     },
     imageUrl:{
+        type:String,
+    },
+    socketId:{
         type:String,
     },
     password:{

@@ -1,6 +1,7 @@
 const app =require('./express');
 const uuid = require("uuid");
 const http = require('http');
+const axios = require('axios');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const CrudSchema =require('../Modal/crud');
@@ -32,28 +33,29 @@ const getuser=(userId)=>{
 }
 io.on('connection', function async(socket) {
   console.log(socket.id," new users connected" );
-
+   var uniqueSocketId=socket.id
    
     //  for connect
    socket.on('adduser',(user)=>{
      var data=user;
      data.socketId=socket.id
-    io.emit('AddUserSocketId',data)
+     console.log(data)
+     socket.emit('AddUserSocketId',data)
         // adduser(user._id,socket.id)
         // // io.emit('getuser',users)
         // // console.log(users,'wow')
    })
   // send message
   socket.on('sendmessage',(data)=>{
-  console.log(data,'text')
+  //console.log(data,'text')
   //io.emit('getmessage',text)
  io.to(data.receiverId).emit('getmessage',data.text)
   })
  //  for disconnect
-   socket.on('disconnect',(user)=>{
-    removeuser(user.userId,socket.id)
-    io.emit('getuser',users)
-})
+   
+socket.on('disconnect',()=>{
+  axios.patch(`http://localhost:8000/crud/update_user/SocketId/${socket.id}`,{socketId:uniqueSocketId})
+  })
 socket.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
 });

@@ -46,14 +46,33 @@ CrudSchema.updateOne(
   }
   catch(err){ return res.status(400).send({data:err,msg:"something error occurs during UpdateDataByID function called"}) }
 }
+const UpdateDataBySocketID=async(req,res)=>{
+  try{
+CrudSchema.updateOne(
+  { socketId: req.params.id },
+   { $set:req.body }
+   )
+   .then(response=>   res.status(200).json({data:response,msg:" sucessfully update user data by id"}))
+   .catch(err=>  res.status(400).json({data:err,msg:'failed to update usedata in db '}))
+  }
+  catch(err){ return res.status(400).send({data:err,msg:"something error occurs during UpdateDataBySocketID function called"}) }
+}
 
- const    DeleteDataById=async(req,res)=>{
+ const DeleteDataById=async(req,res)=>{
   try{
     CrudSchema.deleteOne({_id:req.params.id})
     .then(response=>res.status(200).json({data:response,msg:'sucessfully delete data'}))
     .catch(err=>res.status(400).json({data:err,msg:"failed to delete this is data"}))
   }
   catch(err){ return res.status(400).send({data:err,msg:"something error occurs during DeleteDataById function called"}) }
+}
+const DeleteDataBySocketId=async(req,res)=>{
+  try{
+    CrudSchema.deleteOne({socketId:req.params.id})
+    .then(response=>res.status(200).json({data:response,msg:'sucessfully delete data'}))
+    .catch(err=>res.status(400).json({data:err,msg:"failed to delete this is data"}))
+  }
+  catch(err){ return res.status(400).send({data:err,msg:"something error occurs during DeleteDataBySocketId function called"}) }
 }
 
 const  DeleteAllData=async(req,res)=>{
@@ -69,4 +88,4 @@ const  DeleteAllData=async(req,res)=>{
 
 
 
-module.exports={CreateUser,GetUser,GetDataById,UpdateDataByID,DeleteDataById ,DeleteAllData}
+module.exports={CreateUser,GetUser,GetDataById,UpdateDataByID,UpdateDataBySocketID,DeleteDataById,DeleteDataBySocketId ,DeleteAllData}

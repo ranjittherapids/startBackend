@@ -1,10 +1,19 @@
 const express =require ('express')
 const CrudSchema =require ('../../Modal/crud.js')
-const {socket} =require('../Socket/Socket')
-const router=express.Router()
+const ObjectId = require('mongodb').ObjectID
+const id = new ObjectId()
   const CreateUser= async(req,res)=>{
     try{
-        const UserData=new CrudSchema(req.body)
+      const {name,phone_no,socketId,password,imageUrl,email}=req.body
+        const UserData=new CrudSchema({
+          name:name,
+          phone_no: phone_no,
+          socketId:socketId,
+          password:password,
+          imageUrl:imageUrl,
+          email:email,
+          userId:id
+        })
         UserData.save()
         .then(response=>{
           res.status(200).json({data:response,msg:'sucessfully save data'})
@@ -47,6 +56,7 @@ CrudSchema.updateOne(
   catch(err){ return res.status(400).send({data:err,msg:"something error occurs during UpdateDataByID function called"}) }
 }
 const UpdateDataBySocketID=async(req,res)=>{
+  console.log("UpdateDataBySocketID")
   try{
 CrudSchema.updateOne(
   { socketId: req.params.id },

@@ -1,8 +1,6 @@
 const router =require ("express").Router()
 const path =require('path')
-router.get('/chat',(req,res)=>{
-  const   __dirname = path.resolve();
-    res.sendFile('/index.html', { root: __dirname });
-
-})
+const {create_chat,get_chat}=require('../Controller/chat/chat')
+router.post('/create_chat',create_chat)
+router.get('/get_chat/:SenderID/:ReceiverID',get_chat)
 module.exports = router

@@ -17,6 +17,9 @@ const CrudSchema=new Mongoose.Schema({
     },
     password:{
         type:String,
-    }
+    },
+    userId:{
+        type:String,
+    },
 })
 module.exports =  Mongoose.model('CrudSchema',CrudSchema) 

@@ -1,30 +1,27 @@
 const router=require('express').Router()
-const path =require('path')
-var multer  = require('multer')
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './uploads')
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname)
-    }
-})
-var upload = multer({ storage: storage })
-// router.get('/image',(req,res)=>{
-//     const   __dirname = path.resolve();
-// res.sendFile('/uploadimg.html',{root:__dirname})
+const multiparty=require('connect-multiparty');
+const path = require('path');
+const fs = require('fs');
+ 
+ const MultipartMiddleware=multiparty({uploadDir:'./images'})
+router.post('/upload_image',MultipartMiddleware,(req, res,)=> {
 
-// })
-router.post('/upload_image', upload.single('profile-file'),(req, res,)=> {
-    // req.file is the `profile-file` file
-    // req.body will hold the text fields, if there were any
-    console.log(JSON.stringify(req.file))
-    // var response = '<a href="/">Home</a><br>'
-    // response += "Files uploaded successfully.<br>"
-    // response += `<img src="${req.file.path}" /><br>`
-    // return res.send(response)
-  })
-router.get('/get_image',(req,res)=>{
-    res.send('wow image')
+  var TempFile = req.files.upload;
+    var TempPathfile = TempFile.path;
+
+   const targetPathUrl = path.join(__dirname,"./uploads/"+TempFile.name);
+
+   if(path.extname(TempFile.originalFilename).toLowerCase() === ".png" || ".jpg"){
+     
+    fs.rename(TempPathfile, targetPathUrl, err =>{
+      console.log(TempFile.originalFilename)
+          res.status(200).json({
+         uploaded: true,
+          url: `${TempFile.originalFilename}`
+        });
+
+        if(err) return console.log(err,'wow');
+    })
+  }
 })
 module.exports=router
